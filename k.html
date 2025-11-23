@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>BW  Meet | Görüntülü Görüşme Uygulaması</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --bg-card: #0b1020;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.15);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-soft: #1f2933;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0));
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
+    .nav {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 32px rgba(79, 70, 229, 0.7);
+    }
+
+    .logo-inner {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-size: 1rem;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline {
+      border-color: rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: rgba(79, 70, 229, 0.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.6);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .hero {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem 3rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav {
+        padding-inline: 1rem;
+      }
+      .hero {
+        padding-inline: 1rem;
+        padding-top: 2.5rem;
+      }
+      .hero-title {
+        font-size: 1.9rem;
+      }
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(15, 23, 42, 0.85);
+      padding: 0.25rem 0.8rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.3);
+    }
+
+    .hero-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, #4f46e5, #22c55e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      max-width: 32rem;
+      margin-bottom: 1.3rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.3rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hero-meta span strong {
+      color: var(--text-main);
+    }
+
+    .hero-right {
+      position: relative;
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at top left, #111827, #020617);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 1.1rem;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .call-title {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .call-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.08);
+      color: var(--success);
+      font-size: 0.7rem;
+    }
+
+    .call-window {
+      aspect-ratio: 16 / 9;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: radial-gradient(circle at top, #1f2937, #020617);
+      position: relative;
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .call-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+    }
+
+    .participant {
+      position: relative;
+      background: radial-gradient(circle at top, #111827, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 2px solid rgba(148, 163, 184, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .avatar-1 {
+      background: radial-gradient(circle at top left, #4f46e5, #0f172a);
+    }
+
+    .avatar-2 {
+      background: radial-gradient(circle at top left, #22c55e, #064e3b);
+    }
+
+    .avatar-3 {
+      background: radial-gradient(circle at top left, #06b6d4, #022c22);
+    }
+
+    .avatar-4 {
+      background: radial-gradient(circle at top left, #f97316, #451a03);
+    }
+
+    .participant-label {
+      position: absolute;
+      left: 0.6rem;
+      bottom: 0.6rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      font-size: 0.7rem;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .mic-off {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--danger);
+    }
+
+    .mic-on {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+    }
+
+    .call-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .ctrl-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .ctrl-btn.end {
+      background: var(--danger);
+      border-color: transparent;
+      color: white;
+      width: 42px;
+      border-radius: 999px;
+    }
+
+    .call-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .ping {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .ping-bars {
+      display: flex;
+      gap: 2px;
+      align-items: flex-end;
+    }
+
+    .ping-bar {
+      width: 3px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.4);
+    }
+
+    .ping-bar:nth-child(3),
+    .ping-bar:nth-child(4) {
+      background: var(--success);
+    }
+
+    .shadow-pill {
+      position: absolute;
+      inset: auto auto -30px -40px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.6), transparent 65%);
+      filter: blur(8px);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .floating-stats {
+      position: absolute;
+      top: 12%;
+      right: -10px;
+      width: 160px;
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 0.7rem 0.7rem 0.65rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+    }
+
+    .floating-stats h4 {
+      font-size: 0.8rem;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-tag {
+      display: inline-flex;
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      margin-top: 0.3rem;
+    }
+
+    @media (max-width: 480px) {
+      .floating-stats {
+        display: none;
+      }
+    }
+
+    .section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 32rem;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .features-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .feature-card {
+      background: radial-gradient(circle at top left, #111827, #020617);
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .feature-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-meta {
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .feature-glow {
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.4), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .steps {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .step-number {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: rgba(79, 70, 229, 0.2);
+      border: 1px solid rgba(129, 140, 248, 0.7);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-content h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .step-content p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .mini-card {
+      background: radial-gradient(circle at top, #111827, #020617);
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .mini-card strong {
+      color: var(--text-main);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    @media (max-width: 800px) {
+      .faq-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .faq-item {
+      background: radial-gradient(circle at top left, #020617, #020617);
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 0.9rem;
+    }
+
+    .faq-item h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .faq-item p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .cta {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+    }
+
+    .cta-card {
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.25), rgba(15, 23, 42, 0.98));
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 1rem;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .cta-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .cta-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .cta-text {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      margin-bottom: 0.9rem;
+    }
+
+    .cta-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .cta-right {
+      justify-self: end;
+    }
+
+    @media (max-width: 800px) {
+      .cta-right {
+        justify-self: flex-start;
+      }
+    }
+
+    .cta-input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .cta-input {
+      flex: 1 1 180px;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.85);
+      padding: 0.55rem 0.9rem;
+      color: var(--text-main);
+      font-size: 0.85rem;
+    }
+
+    .cta-input::placeholder {
+      color: #6b7280;
+    }
+
+    footer {
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 1.2rem 1.5rem 1.8rem;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* Küçük "Yakında" etiketi için */
+    .soon-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(251, 191, 36, 0.8);
+      background: rgba(250, 204, 21, 0.12);
+      color: #facc15;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Navigation -->
+    <header>
+      <nav class="nav">
+        <div class="nav-left">
+          <div class="logo">
+            <div class="logo-inner">
+              <img src="BW.png" alt="" style="width:46px; height:46px;"/>
+            </div>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name">BW Meet</div>
+            <div class="brand-sub">Takım odaklı görüntülü görüşme</div>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="#features">Özellikler</a>
+          <a href="#how-it-works">Nasıl Çalışır</a>
+          <a href="#BW  -app">BW   Meet Uygulaması</a>
+        </div>
+        <div class="nav-right">
+        
+        </div>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main>
+      <section class="hero">
+        <div class="hero-left">
+          <div class="hero-label">
+            <span class="live-dot"></span>
+            BW  Meet · Gerçek zamanlı HD görüşme 
+          </div>
+          <h1 class="hero-title">
+            Takım toplantıları,<br />dersler ve projeler için
+            <span>tek tıkla görüntülü görüşme.</span>
+          </h1>
+          <p class="hero-subtitle">
+            BW  Meet, link ile katılma, ekran paylaşımı ve kayıt özellikleriyle
+            dakikalar içinde kendi toplantı odanı kurmanı sağlar. Yazılım yükle,
+            sürücü bekle derdi yok.
+          </p>
+
+          <div class="hero-badges">
+            <span class="badge">Tarayıcıdan çalışır</span>
+            <span class="badge">Uçtan uca şifreleme</span>
+            <span class="badge">Takım odaklı arayüz</span>
+          </div>
+
+          <div class="hero-actions">
+          </div>
+
+          <div class="hero-meta">
+          </div>
+        </div>
+
+        <!-- Fake call UI -->
+        <div class="hero-right">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div>
+                <div class="call-title">BW  Meet · Haftalık Sprint</div>
+                <div>Oda kodu: <strong>#KM-3482</strong></div>
+              </div>
+              <div class="call-status">
+                <span class="live-dot" style="box-shadow:none; width:6px; height:6px;"></span>
+                Canlı · 04:23
+              </div>
+            </div>
+            <div class="call-window">
+              <div class="call-grid">
+                <div class="participant">
+                  <div class="avatar-circle avatar-1">ÖF</div>
+                  <div class="participant-label">
+                    <span class="mic-on"></span>
+                    Ömer · Konuşuyor
+                  </div>
+                </div>
+                <div class="participant">
+                  <div class="avatar-circle avatar-2">EK</div>
+                  <div class="participant-label">
+                    <span class="mic-off"></span>
+                    Emine · Sessiz
+                  </div>
+                </div>
+                <div class="participant">
+                  <div class="avatar-circle avatar-3">BT</div>
+                  <div class="participant-label">
+                    <span class="mic-on"></span>
+                    Berk · Ekran paylaşıyor
+                  </div>
+                </div>
+                <div class="participant">
+                  <div class="avatar-circle avatar-4">ZM</div>
+                  <div class="participant-label">
+                    <span class="mic-on"></span>
+                    Zeynep · Bağlandı
+                  </div>
+                </div>
+              </div>
+              <div class="shadow-pill"></div>
+            </div>
+
+            <div class="call-controls">
+              <button class="ctrl-btn">🎙</button>
+              <button class="ctrl-btn">🎥</button>
+              <button class="ctrl-btn">🖥</button>
+              <button class="ctrl-btn end">⏹</button>
+              <button class="ctrl-btn">💬</button>
+            </div>
+
+            <div class="call-footer">
+              <div class="ping">
+                <span class="ping-bars">
+                  <span class="ping-bar" style="height: 4px;"></span>
+                  <span class="ping-bar" style="height: 7px;"></span>
+                  <span class="ping-bar" style="height: 10px;"></span>
+                  <span class="ping-bar" style="height: 13px;"></span>
+                </span>
+                <span>Ping: 38 ms · İstanbul</span>
+              </div>
+              <div>Katılımcılar: <strong>4</strong> / 12</div>
+            </div>
+          </div>
+
+          <div class="floating-stats">
+            <h4>Toplantı kalitesi</h4>
+            <div class="stat-row">
+              <span>Çözünürlük</span>
+              <span>1080p</span>
+            </div>
+            <div class="stat-row">
+              <span>Bitrate</span>
+              <span>3.2 Mbps</span>
+            </div>
+            <div class="stat-row">
+              <span>Paket kaybı</span>
+              <span style="color: var(--success);">0.3%</span>
+            </div>
+            <div class="stat-row">
+              <span>Ses gürültü filtresi</span>
+              <span>Açık</span>
+            </div>
+            <div class="stat-tag">WebRTC · TLS 1.3 · TURN fallback</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section id="features" class="section">
+        <div class="section-header">
+          <div class="section-label">Özellikler</div>
+          <h2 class="section-title">Geliştirici dostu, kullanıcı için ultra basit.</h2>
+          <p class="section-subtitle">
+            BW  Meet; ekip toplantısı, ders, workshop ya da uzaktan destek için
+            optimize edildi. En kritik özellikler elinin altında.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">🔗</div>
+            <h3 class="feature-title">Link ile katıl</h3>
+            <p class="feature-text">
+              Kayıt zorunluluğu olmadan, tek bir link ile katılım. Takım arkadaşların,
+              müşterilerin ya da öğrencilerin saniyeler içinde odada.
+            </p>
+            <div class="feature-meta">Şifreli oda kodları · Tek tıkla davet</div>
+            <div class="feature-glow"></div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🖥</div>
+            <h3 class="feature-title">Ekran paylaşımı ve pencere seçimi</h3>
+            <p class="feature-text">
+              Tüm ekranı, belirli bir pencereyi veya sadece tarayıcı sekmesini
+              paylaş. FPS ve kalite otomatik olarak bağlantına göre ayarlanır.
+            </p>
+            <div class="feature-meta">HD sunum · Kod / CAD gösterimleri</div>
+            <div class="feature-glow"></div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🎧</div>
+            <h3 class="feature-title">Gürültü engelleme</h3>
+            <p class="feature-text">
+              Yapay zekâ destekli gürültü filtresi ile klavye sesi, sokak gürültüsü
+              ve fan sesi minimuma iner, sesin net kalır.
+            </p>
+            <div class="feature-meta">Düşük gecikme · Net ses</div>
+            <div class="feature-glow"></div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">📼</div>
+            <h3 class="feature-title">Toplantı kaydı</h3>
+            <p class="feature-text">
+              Tek tıkla bulut kaydı. Dersleri, proje toplantılarını ve müşteri
+              görüşmelerini daha sonra izlemek için sakla.
+            </p>
+            <div class="feature-meta">MP4 export · Zaman damgalı kayıtlar</div>
+            <div class="feature-glow"></div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🛡</div>
+            <h3 class="feature-title">Güvenli altyapı</h3>
+            <p class="feature-text">
+              Uçtan uca şifreleme, bölgesel sunucu seçimi ve şifreli oda erişimi
+              ile gizliliğin öncelikli.
+            </p>
+            <div class="feature-meta">E2E · Türkiye / Avrupa sunucuları</div>
+            <div class="feature-glow"></div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3 class="feature-title">Geliştirici API’si</h3>
+            <p class="feature-text">
+              Kendi platformuna BW  Meet’i entegre et. REST API + JavaScript SDK
+              ile dakikalar içinde embed edilmiş toplantı odaları.
+            </p>
+            <div class="feature-meta">Webhook’lar · JWT auth · Test ortamı</div>
+            <div class="feature-glow"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section id="how-it-works" class="section">
+        <div class="section-header">
+          <div class="section-label">Nasıl Çalışır</div>
+          <h2 class="section-title">3 adımda toplantını başlat.</h2>
+          <p class="section-subtitle">
+            Kurulum yok, güncelleme yok, karmaşa yok. Sadece bir bağlantı, bir kamera
+            ve bir mikrofon.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Oda oluştur</h4>
+                <p>
+                  BW  Meet’i aç, toplantı adını yaz ve “Oda oluştur” butonuna tıkla.
+                  Sistem otomatik olarak sana benzersiz bir oda linki üretir.
+                </p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Linki paylaş</h4>
+                <p>
+                  Üretilen linki WhatsApp, Slack, e-posta ya da takvim davetine
+                  yapıştır. Katılımcılar giriş ekranında kamera / mikrofon testini
+                  yaparak odaya girer.
+                </p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Toplantıyı yönet</h4>
+                <p>
+                  Katılımcıları sessize al, ekran paylaş, kayıt başlat, chat ile
+                  link paylaştır. Tüm kontrol, tek bir sade arayüzde.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps-right">
+            <div class="mini-card">
+              <strong>Performans için tasarlandı.</strong><br /><br />
+              BW  Meet; WebRTC altyapısı, otomatik bant genişliği uyarlaması ve
+              akıllı codec seçimi ile zayıf bağlantılarda bile toplantıyı koparmadan
+              devam ettirir.<br /><br />
+              <strong>Tipik değerler:</strong><br />
+              · 1-1 görüşme için ~1 Mbps<br />
+              · 6+ kişilik toplantılar için adaptif bitrate<br />
+              · &lt; 150 ms gecikme hedefi<br />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BW   Meet Uygulaması (YAKINDA) -->
+      <section id="BW  -app" class="section">
+        <div class="section-header">
+          <div class="section-label">BW   Meet Uygulaması</div>
+          <h2 class="section-title">Takım paneli, planlı toplantılar, derli toplu arayüz.</h2>
+          <p class="section-subtitle">
+            Tarayıcı sürümünün üzerine, tam kontrollü bir deneyim: planlı toplantılar,
+            geçmiş toplantılar, takım yönetimi, lobi ekranı ve detaylı bağlantı
+            istatistikleri tek yerde.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-number">A</div>
+              <div class="step-content">
+                <h4>Planlı & geçmiş toplantılar</h4>
+                <p>
+                  Toplantılarını takvim gibi gör, tekrar katıl, kayıt linklerine
+                  tek tıkla ulaş. Takımın ne zaman, kimle, ne kadar süre görüştü,
+                  hepsi bir listede.
+                </p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">B</div>
+              <div class="step-content">
+                <h4>Takım & rol odaklı yapı</h4>
+                <p>
+                  Takım sayfası, rol bazlı erişimler, sadece ekibine özel odalar.
+                  “BW   Meet” uygulaması; dağınık linkler yerine düzenli bir
+                  toplantı hub’ı sunar.
+                </p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">C</div>
+              <div class="step-content">
+                <h4>Lobi / pre-join & istatistik paneli</h4>
+                <p>
+                  Odaya girmeden önce kamera / mikrofon test ekranı, bağlantı
+                  kalitesi göstergeleri ve toplantı sırasında küçük istatistik
+                  kartları (ping, bitrate, paket kaybı vb.).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps-right">
+            <div class="mini-card">
+              <div class="soon-pill">YAKINDA</div>
+              <br /><br />
+              <strong>BW   Meet masaüstü & web uygulaması</strong> şu anda
+              geliştirme aşamasında.<br /><br />
+              Hedeflenen ek özellikler:
+              <br />· Tam ekran chat paneli / kaydırmalı chat
+              <br />· Özelleştirilebilir lobi (takım logosu, renkler)
+              <br />· Toplantı içi küçük istatistikler (ping, FPS, bitrate)
+              <br />· Ayarlar sekmesi ile detaylı cihaz & kalite kontrolü
+              <br /><br />
+              Kısaca: Şu an kullandığın görüntülü görüşme mantığının
+              <strong>“takım için optimize edilmiş”</strong> versiyonu.
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- CTA -->
+      <section class="cta">
+        <div class="cta-card">
+          <div>
+            <h2 class="cta-title">İlk toplantını 30 saniyede başlat.</h2>
+            <p class="cta-text">
+            </p>
+            <p class="cta-note">
+              Spam yok, saçma kampanya yok
+          </div>
+          <div class="cta-right">
+            <div class="cta-input-group">
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-inner">
+        <div>© <span id="year"></span> BW  Meet. Tüm hakları saklıdır.</div>
+        <div class="footer-links">
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Yıl otomatik güncelleme
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
